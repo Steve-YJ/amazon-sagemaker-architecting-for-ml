@@ -41,9 +41,9 @@ XGBoost로 어느 정도 의미있는 결과를 도출했다면, 이를 확장�
 
 ## 참조 코드
 - 다음 XGBoost 예제를 참고하십시오. --> https://github.com/mullue/xgboost
-    - 0. xgboost simple - XGBoost를 이용한 모델개발의 기본 코드를 이해하는 용도입니다.
-    - 1. xgboost direct marketing - SageMaker를 처음 실행하시는 분들을 위한 참조코드입니다.
-    - 2. multiprocess ensembler - 앙상블을 이용하는 심화 예제입니다.
+    0. xgboost simple - XGBoost를 이용한 모델개발의 기본 코드를 이해하는 용도입니다.
+    1. xgboost direct marketing - SageMaker를 처음 실행하시는 분들을 위한 참조코드입니다.
+    2. multiprocess ensembler - 앙상블을 이용하는 심화 예제입니다.
 - 위 예제코드는 다음 코드에 대한 한글 번역입니다. 
     - https://github.com/awslabs/amazon-sagemaker-examples/blob/master/introduction_to_applying_machine_learning/xgboost_customer_churn/xgboost_customer_churn.ipynb 
     - [Starter-Code/Multithreaded_Ensemble_Modeling.ipynb](Starter-Code/Multithreaded_Ensemble_Modeling.ipynb)
