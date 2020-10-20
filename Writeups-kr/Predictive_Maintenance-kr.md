@@ -46,8 +46,10 @@ NASA의 Prognostic Center of Excellence는 예지정비 알고리즘과 예지�
 
 ## 참조 코드 
 
-본 문제를 회귀(regression) 문제로 접근할 것을 권장합니다. 다음 XGBoost 알고리즘을 사용하는 회귀분석 코들를 참고하십시오. 
+본 문제를 회귀(regression) 문제로 접근할 것을 권장합니다. 다음 XGBoost 알고리즘을 사용하는 회귀분석 코드를 참고하십시오. 
 - https://github.com/awslabs/amazon-sagemaker-examples/blob/master/introduction_to_amazon_algorithms/xgboost_abalone/xgboost_abalone.ipynb 
+다음 예제코드는 Tensorflow와 LSTM을 이용하는 예제입니다. 
+- https://github.com/mullue/predmaint/blob/master/SM-pred-present.ipynb
 
 ### 기타 다른 참조  
 
@@ -66,7 +68,7 @@ NASA의 Prognostic Center of Excellence는 예지정비 알고리즘과 예지�
 
 모든 특성(feature)가 중요한가요? 몇가지 특성이 결합되거나 합쳐질 수 있나요?
 
-(분류문제로 접근한다면) 분류 항목(class)에 대한 분포가 균일한가요? 그렇지 않다면 어떻게 이 분포의 밸런스를 맞출수 있을까요?
+(분류문제로 접근한다면) 분류 항목(class)에 대한 분포가 균일한가요? 그렇지 않다면 어떻게 이 분포의 밸런스를 맞출 수 있을까요?
 
 모델의 정확도를 어떻게 측정할까요? 모델을 사용하는 가상의 터보 팬 엔진 제조업체의 입장에서 혼동 행렬(confusion matrix)의 어떤 셀이 가장 큰 영향을 미치나요?
 
