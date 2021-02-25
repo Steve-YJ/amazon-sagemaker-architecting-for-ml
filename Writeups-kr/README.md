@@ -1,4 +1,4 @@
-### Architecting for ML with SageMaker 도전과제
+### AWS 머신 러닝 부트캠프 도전 과제
 
 #### 과제 리스트
 
