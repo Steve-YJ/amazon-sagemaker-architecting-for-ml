@@ -47,7 +47,8 @@ NASA의 Prognostic Center of Excellence는 예지정비 알고리즘과 예지�
 ## 참조 코드 
 
 본 문제를 회귀(regression) 문제로 접근할 것을 권장합니다. 다음 XGBoost 알고리즘을 사용하는 회귀분석 코드를 참고하십시오. 
-- https://github.com/awslabs/amazon-sagemaker-examples/blob/master/introduction_to_amazon_algorithms/xgboost_abalone/xgboost_abalone.ipynb 
+- https://github.com/awslabs/amazon-sagemaker-examples/blob/master/introduction_to_amazon_algorithms/xgboost_abalone/xgboost_abalone.ipynb  
+
 다음 예제코드는 Tensorflow와 LSTM을 이용하는 예제입니다. 
 - https://github.com/mullue/predmaint/blob/master/SM-pred-present.ipynb
 
