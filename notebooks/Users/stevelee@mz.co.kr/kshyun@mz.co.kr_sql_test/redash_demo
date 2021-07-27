@@ -1,0 +1,191 @@
+# Databricks notebook source
+# # mount 시킨 코드
+# # bucket_name = "scm-poc/scm-0713/POC_BQ_Databricks/data/"
+# bucket_name = "scm-poc/POC_BQ_Databricks/data"
+
+# mount_name = "raw_data_samsung"
+
+# # dbutils.fs.mount("gs://%s" % bucket_name, "/mnt/%s" % mount_name)
+# display(dbutils.fs.ls("/mnt/%s" % mount_name))
+
+# ------------------------------------------------
+
+# raw_data_source = "/mnt/%s" % mount_name -> 이 부분에 mount 시켜서 parquet 파일읽음
+tempResultPath="/mnt/delta/test01" # gcs에 쓰는거대신 내장에 temp폴더에 저장
+operating_mode=""
+n=1  # try 시도횟수를 나타냄
+spark.conf.set("spark.sql.execution.arrow.enabled", "true")
+table = "01_time_check_0727" # -> 저장되는 빅쿼리 테이블 이름
+                             # Annotation. 21.07.27.Tue
+  
+# table_compare = "01_time_compare_time_0723"  # (PySpark 실행과값과의 비교를 위한) SQL 실행 결과 저장 테이블 이름 설정
+
+# COMMAND ----------
+
+## DF Name : DF_Main_FCST_Analysis_210_ROW
+
+# import libraries
+from pyspark.sql import SparkSession,DataFrame
+from pyspark import SparkContext , StorageLevel
+import time
+from datetime import date, datetime, timedelta
+from pyspark.sql.types import *
+from pyspark.sql.functions import lit, col, expr, when , concat , isnan , count , lead , lag
+from pyspark.sql import functions as F
+from pyspark.sql import SparkSession,DataFrame,Window
+from pyspark import SparkContext , StorageLevel
+import uuid
+from datetime import datetime
+from pytz import timezone
+import datetime as dt
+import pandas as pd
+from functools import reduce
+import re
+
+# running time
+running_start_time = time.monotonic()
+
+# # running spark session
+# spark = SparkSession.builder.appName("COM_10_210_DF_Main_FCST_Analysis_210_ROW")\
+#         .enableHiveSupport()\
+#         .getOrCreate()
+
+
+# cf 에서 호출
+
+sys_param = {}
+sys_param['df_name']= 'COM_10_210_DF_Main_FCST_Analysis_210_ROW'
+sys_param['start_time']= running_start_time
+
+# MFAS PARAM 
+FA_PW_PLANWEEK = "10"
+CURRENT_WEEK_OVERRIDE = "202126"
+BIVIEW = "26"
+LIME_TARGETWEEK_FILTER = "3"
+LIME_ACCOUNT_FILTER = "3"
+LIME_ITEM_FILTER = "3"
+
+
+# COMMAND ----------
+
+try :
+  exec(dbutils.widgets.get("param"))
+except :
+  pass
+
+# COMMAND ----------
+
+# MAGIC %run ./mfas
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ###01. WEEK26 GROUP BY productgroup
+
+# COMMAND ----------
+
+FCST_ARCHIVE_csv = load(spark, 'FCST_ARCHIVE_csv', 5)
+display(FCST_ARCHIVE_csv)
+
+# COMMAND ----------
+
+df = spark.read.format("bigquery").load("buseo_scm_poc.FCST_ARCHIVE_csv")
+df.write.format("delta").saveAsTable("FCST_ARCHIVE")
+# display(df.limit(5))
+
+# COMMAND ----------
+
+# Create TempView
+
+# FCST_ARCHIVE = df.createOrReplaceTempView("FCST_ARCHIVE")
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC 
+# MAGIC SELECT PLANID, SUM(WEEK26)
+# MAGIC FROM FCST_ARCHIVE
+# MAGIC GROUP BY PLANID
+# MAGIC ORDER BY PLANID 
+
+# COMMAND ----------
+
+# MAGIC %md 
+# MAGIC ### 3. GROUP BY PRODUCTGROUP
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC 
+# MAGIC SELECT PRODUCTGROUP, SUM(WEEK26)
+# MAGIC FROM FCST_ARCHIVE
+# MAGIC GROUP BY PRODUCTGROUP 
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### 04. WEEK26 GROUP BY item
+
+# COMMAND ----------
+
+display(FCST_ARCHIVE_csv)
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from FCST_ARCHIVE
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC 
+# MAGIC UPDATE FCST_ARCHIVE
+# MAGIC SET PLANID = PLANID + 1
+# MAGIC 
+# MAGIC -- ORDER BY PLANID DESC
+# MAGIC 
+# MAGIC -- SELECT *
+# MAGIC -- FROM FCST_ARCHIVE_csv
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC 
+# MAGIC ## Update를 위해 gcs에서 데이터를 불러오기
+
+# COMMAND ----------
+
+test = spark.read.format('parquet').load('gs://buseo-scm-poc/POC_BQ_Databricks/data/FCST_ARCHIVE.csv')
+
+# COMMAND ----------
+
+test.write.format("delta").saveAsTable("test")
+# test2 = test.write.format("delta").load()
+
+# COMMAND ----------
+
+test.write.format("delta").mode("overwrite").save()
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC 
+# MAGIC UPDATE test
+# MAGIC SET PLANID = PLANID + 1
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC 
+# MAGIC SELECT DISTINCT PLANID
+# MAGIC FROM test
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC -- SELECT DISTINCT PLANID
+# MAGIC SELECT *
+# MAGIC FROM test
+
+# COMMAND ----------
+
